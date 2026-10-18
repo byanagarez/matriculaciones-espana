@@ -1,0 +1,19 @@
+# --- Datos originales de la DGT: pesan varios GB, NO se suben (se descargan, ver README) ---
+data/raw/*
+!data/raw/.gitkeep
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# --- Editor / sistema ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Ignorar otros archivos Power BI, pero incluir el dashboard del proyecto
+*.pbix
+!MATRICULACIONES.pbix

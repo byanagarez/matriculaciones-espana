@@ -1,0 +1,5 @@
+# Marcas que la DGT registra bajo otra marca. Si el modelo empieza por prefijo_modelo,
+# el vehiculo pasa a marca_destino y el prefijo se elimina del modelo.
+marca_origen,prefijo_modelo,marca_destino
+SEAT,CUPRA,CUPRA
+FIAT,ABARTH,ABARTH
