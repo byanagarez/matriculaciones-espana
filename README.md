@@ -9,9 +9,15 @@ Pipeline en Python + dashboard en Power BI que convierte los **microdatos mensua
 
 ![Dashboard](docs/dashboard.png)
 
+## ¿Por qué he hecho este proyecto?
+
+Es interesante ver cómo evoluciona el mercado del automóvil, sobre todo durante estos últimos años en los que se han visto tantas nuevas marcas aparecer en España; sin embargo, a pesar de que los datos de la DGT están disponibles para todo el mundo y hay informes, eché en falta otra forma de explorar los datos de forma visual, con la posibilidad de comparar marcas, modelos o ver el aumento de los vehículos híbridos y eléctricos. 
+
+Por eso nace este proyecto de análisis propio a partir de los microdatos oficiales de la Dirección General de Tráfico (DGT), abarcando los últimos 6 años disponibles, desde 2020 a 2025.Para delimitar el mercado estudiado, se excluyen vehículos comerciales, especiales y determinados usos profesionales mediante reglas de filtrado propias.
+
 ## El reto de los datos
 
-Los TXT de la DGT son registros de **714 caracteres** sin separadores y con texto sucio: la misma marca aparece como `VW`, `VOLKSWAGEN VW` o `VOLKSWAGEN AG`; el modelo viene cortado a 22 caracteres (`C3 AIRCR`), con el acabado pegado (`N 2008 ALLURE PURETECH`) o con la marca repetida (`CITROEN CITROEN C3`). Sin limpiar, un mismo modelo se reparte en cientos de etiquetas y los rankings salen mal.
+Los TXT de la DGT son registros de **714 caracteres** sin separadores y con texto sucio: la misma marca aparece como `VW`, `VOLKSWAGEN VW` o `VOLKSWAGEN AG`; el modelo viene cortado a 22 caracteres (`C3 AIRCR`), con el acabado pegado (`N 2008 ALLURE PURETECH`) o con la marca repetida (`CITROEN CITROEN C3`). Antes de la limpieza de los datos y normalización de las variables, siguiendo unos criterios explicados más adelante, un mismo modelo se reparte en cientos de etiquetas que hacen que los rankings no sean realistas.
 
 ## Qué hace el código
 
@@ -21,9 +27,11 @@ Los TXT de la DGT son registros de **714 caracteres** sin separadores y con text
 4. **Rescata** modelos no reconocidos usando el `CODIGO_ITV` (código de homologación) de vehículos ya clasificados.
 5. **Agrega** por mes, marca, modelo y tecnología y **escribe auditorías** de todo lo que descarta o no puede clasificar.
 
-## Definición de "turismo"
+## Definición de "turismo" para la limpieza
 
-Un registro entra si cumple **todo** lo siguiente:
+El análisis se centra en turismos convencionales. Aunque se parte de vehículos clasificados como M1, se aplican exclusiones adicionales para retirar determinados modelos comerciales, vehículos especiales y usos profesionales. Por ello, los totales pueden diferir de las estadísticas oficiales de matriculaciones de la DGT.
+
+Concretamente, un registro entra si cumple **todo** lo siguiente:
 
 | Condición | Campo | Valor |
 |---|---|---|
@@ -44,6 +52,9 @@ Todo lo excluido queda en `data/processed/registros_excluidos.csv` con su motivo
 ```
 ├── procesar_matriculaciones.py   # lectura de TXT, filtros, agregación, informes
 ├── normalizacion.py              # limpieza de marcas y modelos
+├── MATRICULACIONES.pbix          # dashboard interactivo en Power BI
+├── README.md
+├── requirements.txt
 ├── catalogos/
 │   ├── marcas.csv                # alias, marcas a excluir, transformadores
 │   ├── modelos.csv               # marca, patrón, modelo normalizado, incluir (1/0)
@@ -53,6 +64,7 @@ Todo lo excluido queda en `data/processed/registros_excluidos.csv` con su motivo
 │   ├── raw/                      # aquí van los TXT descargados (no se versionan)
 │   └── processed/                # resultados
 └── docs/
+    └── dashboard.png             # captura del dashboard
 ```
 
 ## Cómo reproducirlo
@@ -85,6 +97,18 @@ python -m unittest discover -s tests -v
 | `registros_excluidos.csv` | Qué se descartó y por qué |
 | `resumen_procesamiento.csv` | Contadores por fichero (líneas leídas, descartadas por cada motivo) |
 
+# Resumen procesamiento
+
+| Fase | Registros |
+|---|---|
+| Total leído | 9.426.678 |
+| Excluidos por no ser M1 | 2.722.806 |
+| Excluidos por no ser nuevos | 752.817 |
+| Excluidos por trámite no ordinario | 2.968 |
+| Candidatos a turismo | 5.948.087 |
+| Excluidos por otras reglas | 91.487 |
+| **Turismos finales** | **5.856.600** |
+
 ## Cómo mejorar la clasificación
 
 No hace falta tocar el código. Abre `modelos_pendientes_revision.csv`, mira los modelos con más matriculaciones y añade una fila en `catalogos/modelos.csv`:
@@ -105,6 +129,10 @@ El patrón coincide si el modelo **empieza** por él (`C3` coincide con `C3 PURE
 - **El periodo es el del fichero mensual**, no la fecha exacta de matriculación; el número de registros con fecha distinta se anota en `resumen_procesamiento.csv`.
 - Las autocaravanas se filtran por carrocería y servicio, así que la calidad del filtro depende de que esos campos estén bien informados (por eso existe `--perfilar`).
 
+El proceso ha permitido normalizar el modelo del 99,94 % de las matriculaciones. Los casos que no se han podido identificar se agrupan bajo la categoría OTROS de cada marca y quedan registrados para posibles revisiones futuras.
+
 ## Licencia
 
-Código bajo licencia MIT. Los datos son de la DGT; consulta sus condiciones de reutilización en su portal de datos abiertos.
+Código bajo licencia MIT. 
+
+Fuente de datos: Dirección General de Tráfico (DGT), *Microdatos de Matriculaciones de Vehículos (mensual)*, 2020–2025. Datos reutilizados bajo licencia CC BY 4.0. Los registros se han filtrado, normalizado y agregado para este proyecto. Los resultados no constituyen estadísticas oficiales de la DGT.
