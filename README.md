@@ -131,8 +131,15 @@ El patrón coincide si el modelo **empieza** por él (`C3` coincide con `C3 PURE
 
 El proceso ha permitido normalizar el modelo del 99,94 % de las matriculaciones. Los casos que no se han podido identificar se agrupan bajo la categoría OTROS de cada marca y quedan registrados para posibles revisiones futuras.
 
-## Licencia
 
-Código bajo licencia MIT. 
+## Fuente de datos y licencias
 
-Fuente de datos: Dirección General de Tráfico (DGT), *Microdatos de Matriculaciones de Vehículos (mensual)*, 2020–2025. Datos reutilizados bajo licencia CC BY 4.0. Los registros se han filtrado, normalizado y agregado para este proyecto. Los resultados no constituyen estadísticas oficiales de la DGT.
+**Datos originales:** Dirección General de Tráfico (DGT), Ministerio del Interior. [Microdatos de Matriculaciones de Vehículos (mensual), 2020–2025](https://datos.gob.es/es/catalogo/e00003801-microdatos-de-matriculaciones-de-vehiculos-mensual).
+
+**Licencia de los datos:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+**Código del proyecto:** MIT.
+
+Los registros originales han sido filtrados, limpiados, normalizados y agregados mediante Python. El dashboard de Power BI y el análisis son de elaboración propia.
+
+Los resultados responden a criterios de clasificación propios y no constituyen estadísticas oficiales de la DGT. Este proyecto no está afiliado ni respaldado por dicho organismo.
